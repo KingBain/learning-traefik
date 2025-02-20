@@ -1,0 +1,41 @@
+# dynamic.yml
+http:
+  routers:
+    # Router for French and English domains to redirect
+    redirect-router:
+      rule: "Host(`plateforme-federale-de-donnees-scientifiques.canada.ca`) || Host(`federal-science-datahub.canada.ca`)"
+      entryPoints:
+        - web
+      middlewares:
+        - redirect-to-sds
+      # A dummy service is required even though the middleware intercepts the request.
+      service: dummy
+      priority: 1
+
+    # Router for the production bilingual domain (actual service)
+    sds-router:
+      rule: "Host(`sds.canada.ca`)"
+      entryPoints:
+        - web
+      service: sds-service
+      priority: 1
+
+  services:
+    sds-service:
+      loadBalancer:
+        servers:
+          # Replace with your actual backend endpoint if needed.
+          - url: "http://sds-backend"
+    dummy:
+      loadBalancer:
+        servers:
+          # Dummy URL; not actually used since the middleware returns a redirect.
+          - url: "http://0.0.0.0"
+
+  middlewares:
+    redirect-to-sds:
+      redirectRegex:
+        # This regex captures the scheme and any path and then replaces the host.
+        regex: "^(https?://)(.*)$"
+        replacement: "$1sds.canada.ca"
+        permanent: true

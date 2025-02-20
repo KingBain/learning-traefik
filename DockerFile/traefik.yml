@@ -1,0 +1,19 @@
+# traefik.yml
+log:
+  level: INFO
+
+entryPoints:
+  web:
+    address: ":80"
+  # Define a separate entrypoint for the dashboard if you prefer:
+  traefik:
+    address: ":8080"
+
+api:
+  dashboard: true
+  insecure: true  # Note: Insecure mode allows public access; use only for testing
+
+providers:
+  file:
+    filename: /etc/traefik/dynamic.yml
+    watch: true
