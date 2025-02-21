@@ -1,6 +1,9 @@
 # traefik.yml
 log:
   level: INFO
+  filePath: "/dev/stdout"  # Ensures logs are written to the console
+
+accessLog: {}  # Optional: enables access logging to stdout
 
 entryPoints:
   web:

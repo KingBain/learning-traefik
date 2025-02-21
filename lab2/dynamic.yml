@@ -1,0 +1,16 @@
+# dynamic.yml
+http:
+  routers:
+    localhost-router:
+      rule: "Host(`localhost`) || Host(`127.0.0.1`)"
+      entryPoints:  
+        - web
+      service: dev
+      priority: 1
+
+  services:
+    dev: 
+      loadBalancer:
+        servers:
+          - url: "https://blue.com"
+
